@@ -98,7 +98,9 @@ Route::middleware('auth')->prefix('revisions')->name('revisions.')->group(functi
 
 Route::middleware('auth')->prefix('comments')->name('comments.')->group(function() {
 
-    Route::post('', 'CommentsController@store')->name('store');
+    Route::get('comment', 'CommentsController@show')->name('show');
+
+    Route::post('{project}', 'CommentsController@store')->name('store');
 
     Route::delete('{comment}', 'CommentsController@destroy')->name('destroy');
 

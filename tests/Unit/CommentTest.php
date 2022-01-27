@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\AppTest;
-use App\Models\{Comment, User, File, Folder};
+use App\Models\{Comment, User, File, Folder, Team};
 
 class CommentTest extends AppTest
 {
@@ -29,6 +29,14 @@ class CommentTest extends AppTest
         $comment = create(Comment::class, ['model_type' => Folder::class, 'model_id' => create(Folder::class)->id]);
 
         $this->assertInstanceOf(Folder::class, $comment->model);
+    }
+
+    /** @test */
+    public function it_belongs_to_a_team()
+    {
+        $comment = create(Comment::class);
+
+        $this->assertInstanceOf(Team::class, $comment->team); 
     }
 
     /** @test */

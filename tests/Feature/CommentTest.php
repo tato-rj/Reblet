@@ -3,20 +3,30 @@
 namespace Tests\Feature;
 
 use Tests\AppTest;
-use App\Models\{Folder, File, Comment};
+use App\Models\{Folder, File, Comment, Team, Project};
 use Illuminate\Http\UploadedFile;
-use Tests\Traits\Loggedin;
 
 class CommentTest extends AppTest
 {
-    use Loggedin;
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        $this->login();
+
+        \Event::fake();
+    }
 
     /** @test */
     public function users_can_write_comments()
-    {
+    {      
         $file = create(File::class);
 
-        $this->post(route('comments.store'), ['content' => 'foo', 'model_type' => get_class($file), 'model_id' => $file->id]);
+        $project = $file->revision->folder->project;
+
+        $project->team()->save(new Team(['name' => $project->name . ' team']));
+
+        $this->post(route('comments.store', $project), ['content' => 'foo', 'model_type' => get_class($file), 'model_id' => $file->id]);
 
         $this->assertDatabaseHas('comments', ['content' => 'foo']);
     }
@@ -26,7 +36,11 @@ class CommentTest extends AppTest
     {
         $folder = create(Folder::class);
 
-        $this->post(route('comments.store'), ['content' => 'foo', 'model_type' => get_class($folder), 'model_id' => $folder->id]);
+        $project = $folder->project;
+
+        $project->team()->save(new Team(['name' => $project->name . ' team']));
+
+        $this->post(route('comments.store', $project), ['content' => 'foo', 'model_type' => get_class($folder), 'model_id' => $folder->id]);
 
         $this->assertDatabaseHas('comments', ['content' => 'foo']);
 
@@ -41,8 +55,12 @@ class CommentTest extends AppTest
     public function users_cannot_delete_others_comments()
     {
         $this->expectException('Illuminate\Auth\Access\AuthorizationException');
-        
-        $comment = create(Comment::class);
+
+        $project = create(Project::class);
+
+        $project->team()->save(new Team(['name' => $project->name . ' team']));
+
+        $comment = create(Comment::class, ['team_id' => $project->team]);
 
         $this->delete(route('comments.destroy', $comment));
 

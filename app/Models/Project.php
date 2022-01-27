@@ -20,7 +20,7 @@ class Project extends DocuSquared
                 'creator_id' => $project->creator_id,
                 'is_home' => true
             ]);
-            
+
             $project->team()->save(new Team(['name' => $project->name . ' team']));
         });
 

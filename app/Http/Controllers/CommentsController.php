@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Comment};
+use App\Models\{Comment, Project};
 use App\Models\Chat\Commentable;
 use Illuminate\Http\Request;
+use App\Events\NewCommentPosted;
 
 class CommentsController extends Controller
 {
@@ -34,7 +35,7 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
         $request->validate([
             'content' => 'required',
@@ -42,14 +43,17 @@ class CommentsController extends Controller
             'model_id' => 'required|integer'
         ]);
 
-        $model = (new $request->model_type)->find($request->model_id);
+        $model = (new $request->model_type)->findOrFail($request->model_id);
 
         $comment = Comment::create([
             'user_id' => auth()->user()->id,
+            'team_id' => $project->team->id,
             'model_type' => $request->model_type,
             'model_id' => $request->model_id,
             'content' => $request->content
         ]);
+
+        NewCommentPosted::dispatch($comment);
 
         return view('pages.comments.all', ['comments' => $model->comments]);
     }
@@ -60,9 +64,11 @@ class CommentsController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function show(Comment $comment)
+    public function show(Request $request)
     {
-        //
+        $comment = Comment::findOrFail($request->id);
+
+        return view('pages.comments.comment', compact('comment'))->render();
     }
 
     /**

@@ -9,6 +9,11 @@ class Comment extends DocuSquared
         return $this->belongsTo(User::class);
     }
 
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function model()
     {
         return $this->morphTo();

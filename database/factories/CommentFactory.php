@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\{User, File};
+use App\Models\{User, File, Project};
 
 class CommentFactory extends Factory
 {
@@ -17,6 +17,9 @@ class CommentFactory extends Factory
         return [
             'user_id' => function() {
                 return User::factory()->create()->id;
+            },
+            'team_id' => function() {
+                return Project::factory()->create()->team->id;
             },
             'model_type' => File::class,
             'model_id' => function() {

@@ -29,6 +29,13 @@
 }
 
 </style>
+
+<script type="text/javascript">
+window.project = <?php echo json_encode([
+	'id' => $project->id,
+	'team' => $project->team
+]); ?>
+</script>
 @endpush
 
 @section('content')
@@ -326,6 +333,22 @@ $(document).on('change', '.support-data-form select[name="type"]', function() {
 
 	$target.find('input').prop('required', true);
 	$target.show();
+});
+</script>
+
+<script type="text/javascript">
+window.Echo.private('comments.'+project.team.id).listen('NewCommentPosted', function(e) {
+    let $container = $('.comments-container');
+console.log(e.comment.id);
+    if ($container.length) {
+    	axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
+    		 .then(function(response) {
+    		 	$container.append(response.data);
+    		 });
+    } else {
+    	console.log('Alert user that a message has been received.');
+    }
+    
 });
 </script>
 @endpush
