@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Revision;
+use App\Models\{Revision, User};
 
 class FileFactory extends Factory
 {
@@ -15,9 +15,15 @@ class FileFactory extends Factory
     public function definition()
     {
         return [
+            'creator_id' => function() {
+                return User::factory()->create()->id;
+            },
             'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
+            'path' => $this->faker->url,
+            'type' => $this->faker->word,
             'url' => $this->faker->url,
+            'size' => $this->faker->randomNumber(),
+            'extension' => $this->faker->word,
             'revision_id' => function() {
                 return Revision::factory()->create()->id;
             },

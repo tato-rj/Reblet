@@ -15,6 +15,7 @@ class RevisionFactory extends Factory
     public function definition()
     {
         return [
+            'name' => $this->faker->word,
             'folder_id' => function() {
                 return Folder::factory()->create()->id;
             }

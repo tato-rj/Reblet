@@ -12,7 +12,12 @@ class UserTest extends AppTest
     {
         $request = make(User::class);
 
-        $this->post(route('register'), $request);
+        $this->post(route('register'), [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'password_confirmation' => $request->password
+        ]);
 
         $this->assertDatabaseHas('users', ['name' => $request->name]);
     }

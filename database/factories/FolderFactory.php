@@ -17,6 +17,7 @@ class FolderFactory extends Factory
         $project = Project::factory()->create();
 
         return [
+            'slug' => str_slug($this->faker->sentence),
             'creator_id' => function() {
                 return User::factory()->create()->id;
             },

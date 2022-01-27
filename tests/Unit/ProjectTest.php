@@ -28,16 +28,20 @@ class ProjectTest extends AppTest
 
     /** @test */
     public function it_has_many_members()
-    {
-        $this->project->team->members()->save(create(User::class));
-        
+    {        
         $this->assertInstanceOf(User::class, $this->project->team->members->first());
     }
 
     /** @test */
-    public function it_automatically_has_a_root_folder_when_created()
+    public function it_automatically_has_a_leader_when_created()
+    {        
+        $this->assertInstanceOf(User::class, $this->project->team->leader());
+    }
+
+    /** @test */
+    public function it_automatically_has_a_home_folder_when_created()
     {
-        $this->assertNotEmpty($this->project->folders()->root());
+        $this->assertNotEmpty($this->project->folders()->home());
     }
 
     /** @test */

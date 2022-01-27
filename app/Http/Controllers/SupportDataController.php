@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SupportData;
+use App\Models\{SupportData, File};
 use Illuminate\Http\Request;
 
 class SupportDataController extends Controller
@@ -33,9 +33,17 @@ class SupportDataController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, File $file)
     {
-        //
+        $request->validate(['type' => 'required']);
+
+        $file->supportData()->create([
+            'type' => $request->type,
+            'url' => $request->url,
+            'data' => $request->data
+        ]);
+
+        return back()->with('success', 'The supporting file has been added.');
     }
 
     /**
@@ -78,8 +86,10 @@ class SupportDataController extends Controller
      * @param  \App\Models\SupportData  $supportData
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SupportData $supportData)
+    public function destroy(File $file, SupportData $supportData)
     {
-        //
+        $supportData->delete();
+
+        return back()->with('success', 'The support file has been deleted.');
     }
 }

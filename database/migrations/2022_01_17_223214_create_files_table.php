@@ -15,10 +15,20 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->string('url');
+            $table->unsignedInteger('creator_id');
+            $table->string('name')->unique()->index();
+            $table->string('given_name')->nullable();
+            $table->string('downloaded_name')->nullable();
+            $table->string('extension');
+            $table->string('type');
+            $table->unsignedInteger('size');
+            $table->string('description')->nullable();
+            $table->string('path')->unique();
+            $table->string('url')->unique();
             $table->unsignedInteger('revision_id');
+            $table->unsignedInteger('duplicated_from_revision_id')->nullable();
+            $table->timestamp('replaced_at')->nullable();
+            $table->timestamp('downloaded_at')->nullable();
             $table->timestamps();
         });
     }

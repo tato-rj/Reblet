@@ -1,0 +1,33 @@
+button, .btn {outline: none!important};
+
+*:focus {
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.btn {
+    font-weight: $btn-font-weight;
+}
+
+.btn-raw {
+    background: 0 0;
+    border: none;
+    padding: 0;
+}
+
+.btn-wide, .btn-lg {
+    @extend .px-4;
+}
+
+.btn-float, .btn-float:focus {
+    @extend .shadow-xl;
+}
+
+.btn-float:active {
+    @extend .shadow-none;
+}

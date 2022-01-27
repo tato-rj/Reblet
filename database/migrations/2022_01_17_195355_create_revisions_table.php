@@ -15,6 +15,7 @@ class CreateRevisionsTable extends Migration
     {
         Schema::create('revisions', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->unsignedInteger('folder_id');
             $table->timestamps();
         });

@@ -1,0 +1,54 @@
+@import "bootstrap/setup";
+
+//////////////////////////////////////
+//// CUSTOM CSS BELOW
+//////////////////////////////////////
+
+a {
+	color: $primary-color;
+
+	&:hover {
+		color: darken($primary-color, 8);
+	}
+}
+
+.btn-block {
+	@extend .w-100;
+}
+
+.nav-tabs {
+	.nav-link:not(.active) {
+		@extend .text-muted, .opacity-6;
+	}
+}
+
+#file-panel .panel-title:before {
+	content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: $primary-color;
+}
+
+.avatar-xs {
+	@extend .mr-1;
+	height: 18px; 
+	width: 18px; 
+	font-size: 62%;
+}
+
+.avatar-sm {
+	@extend .mr-2;
+	height: 23px; 
+	width: 23px; 
+	font-size: 88%;
+}
+
+.avatar-lg {
+	@extend .mr-2;
+	height: 31px; 
+	width: 31px; 
+	font-size: 94%;
+}

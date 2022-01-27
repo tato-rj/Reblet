@@ -15,6 +15,7 @@ class ProjectFactory extends Factory
     public function definition()
     {
         return [
+            'slug' => str_slug($this->faker->sentence),
             'creator_id' => function() {
                 return User::factory()->create()->id;
             },

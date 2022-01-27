@@ -15,12 +15,14 @@ class CreateFoldersTable extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('creator_id')->nullable();
-            $table->string('name')->nullable();
+            $table->string('slug');
+            $table->unsignedInteger('creator_id');
+            $table->string('name');
             $table->string('description')->nullable();
             $table->unsignedInteger('project_id');
             $table->string('parent_type');
             $table->unsignedInteger('parent_id');
+            $table->boolean('is_home')->default(false);
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });

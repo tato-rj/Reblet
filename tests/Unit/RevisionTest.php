@@ -4,9 +4,12 @@ namespace Tests\Unit;
 
 use Tests\AppTest;
 use App\Models\{Project, Folder, Revision, File};
+use Tests\Traits\Loggedin;
 
 class RevisionTest extends AppTest
 {
+    use Loggedin;
+
     public function setUp() : void
     {
         parent::setUp();
@@ -26,5 +29,11 @@ class RevisionTest extends AppTest
         $this->revision->files()->save(create(File::class));
 
         $this->assertInstanceOf(File::class, $this->revision->files->first());
+    }
+
+    /** @test */
+    public function it_knows_its_path()
+    {
+        $this->assertTrue(str_contains($this->revision->path(), 'revision-'));
     }
 }

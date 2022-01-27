@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\AppTest;
-use App\Models\{Folder, Project, Revision, User};
+use App\Models\{Folder, Project, Revision, User, Comment};
 
 class FolderTest extends AppTest
 {
@@ -35,6 +35,32 @@ class FolderTest extends AppTest
     }
 
     /** @test */
+    public function it_has_subfolders()
+    {
+        $parent = create(Folder::class);
+
+        $folder = create(Folder::class, ['parent_type' => Folder::class, 'parent_id' => $parent->id]); 
+
+        $this->assertInstanceOf(Folder::class, $parent->children()->first()); 
+    }
+
+    /** @test */
+    public function it_knows_its_breadcrumb()
+    {
+        $project = create(Project::class);
+
+        $home = $project->folders()->first();
+
+        $grandparent = create(Folder::class, ['name' => 'grandparent', 'parent_type' => get_class($home), 'parent_id' => $home->id]);
+
+        $parent = create(Folder::class, ['name' => 'parent', 'parent_type' => get_class($grandparent), 'parent_id' => $grandparent->id]);
+
+        $child = create(Folder::class, ['parent_type' => get_class($parent), 'parent_id' => $parent->id]);
+
+        $this->assertEquals($child->breadcrumb()->count(), 4);
+    }
+
+    /** @test */
     public function it_automatically_has_a_revision_when_created()
     {
         $this->assertNotEmpty($this->folder->revisions);
@@ -58,5 +84,13 @@ class FolderTest extends AppTest
         $this->folder->approve();
 
         $this->assertTrue($this->folder->isApproved());
+    }
+
+    /** @test */
+    public function it_has_many_comments()
+    {
+        $comment = create(Comment::class, ['model_type' => get_class($this->folder), 'model_id' => $this->folder->id]);
+
+        $this->assertInstanceOf(Comment::class, $this->folder->comments->first());
     }
 }

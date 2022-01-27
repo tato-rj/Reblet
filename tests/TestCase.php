@@ -2,12 +2,20 @@
 
 namespace Tests;
 
+use Tests\Support\ExceptionHandling;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, RefreshDatabase;
+    use CreatesApplication, RefreshDatabase, ExceptionHandling;
+
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        $this->disableExceptionHandling();
+    }
 }
 
 // PROJECT
