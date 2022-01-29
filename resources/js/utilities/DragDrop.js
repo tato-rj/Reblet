@@ -1,118 +1,164 @@
-// class DragDrop
-// {
-// 	constructor(params)
-// 	{
-// 		this.formId = params.formId;
-// 		this.method = params.method;
-// 		this.maxFilesize = params.maxFilesize;
-// 		this.parallelUploads = params.parallelUploads;
-// 		this.thumbPath = params.thumbPath;
-// 	}
+class DragDrop
+{
+	constructor(params)
+	{
+		this.formId = params.formId;
+		this.method = params.method;
+		this.maxFilesize = params.maxFilesize;
+		this.parallelUploads = params.parallelUploads;
+		this.thumbPath = params.thumbPath;
+	}
 
-// 	run()
-// 	{
-// 		let obj = this;
+	run()
+	{
+		let obj = this;
+		
+		Dropzone.autoDiscover = false;
 
-// 		Dropzone.options.dropForm = {
-// 			method: obj.method,
-// 			url: '#',
-// 			maxFilesize: obj.maxFilesize, // MB
-// 			parallelUploads: obj.parallelUploads,
-// 			dictDefaultMessage: '',
-// 		    headers: {},
-// 		    accept: function(file, next) {
-// 		    	obj._getPresignedUrl(file)
-// 		    	 .then(function(response) {
-// 		    	 	file.signedRequest = response.data;
-// 		    	 	next();
-// 		    	 })
-// 		    	 .catch(function(error) {
-// 		    	 	console.log(error);
-// 		    	 	next('Could not get the presigned url.');
-// 		    	 });
-// 		    },
-// 		    sending: function(file, xhr) {
-// 		        var _send = xhr.send;
-// 		        xhr.setRequestHeader('x-amz-acl', 'public-read');
-// 		        xhr.send = function() {
-// 		            _send.call(xhr, file);
-// 		        }
-// 		    },
-// 		    processing: function(file) {
-// 		        this.options.url = file.signedRequest;
-// 		    },
-// 			init: function() {
-// 				obj._loadFiles(this);
+		let dropzone = new Dropzone(obj.formId, {
+			method: obj.method,
+			url: '#',
+			maxFilesize: obj.maxFilesize, // MB
+			parallelUploads: obj.parallelUploads,
+			dictDefaultMessage: '',
+		    headers: {},
+		    accept: function(file, next) {
+		    	obj._checkForDuplicate(file)
+		    		.then(function(response) {
+		    			let fileExists = response.data;
+			    		if (! fileExists || confirm('This file already exists. Do you want to replace it?')) {
+			    			obj._uploadFile(file, next);
+			    		} else {
+			    			dropzone.removeFile(file);
+			    		}
+		    		});
+		    },
+		    sending: function(file, xhr) {
+		        var _send = xhr.send;
+		        xhr.setRequestHeader('x-amz-acl', 'public-read');
+		        xhr.send = function() {
+		            _send.call(xhr, file);
+		        }
+		    },
+		    processing: function(file) {
+		        this.options.url = file.signedRequest;
+		        log(file.signedRequest);
+		    },
+			init: function() {
+				this.on('addedfile', file => {
+					obj._getIcon(file, this);
+				});
+				// this.on("sending", file => {});
+				// this.on("error", (file, error) => {});
+				this.on("success", (file) => {
+					obj._saveFile();
+				});
+				// this.on("complete", (file) => {});
+				// this.on('thumbnail', (file, thumbnail) => {})
+			},
+			error: function(file, error) {
+				log('ERROR: '+error);
+			}
+		});
 
-// 				this.on('addedfile', file => {
-// 					obj._getIcon(file, this);
-// 				});
-// 				this.on("sending", file => {});
-// 				this.on("error", (file, error) => {});
-// 				this.on("success", (file) => {});
-// 				this.on("complete", (file) => {});
-// 			}
-// 		};
+		return obj;
+	}
 
-// 		return obj;
-// 	}
+	_getPresignedUrl(file)
+	{
+		let params = {
+			path: $(this.formId).data('path'),
+			name: file.name
+		};
 
-// 	onClick(action)
-// 	{
-// 		$(document).on('click', '.dropzone.dz-clickable .dz-image', function() {
-// 			action(this);
-// 		});
+		return axios.post($(this.formId).attr('presignedUrl'), params);
+	}
 
-// 		return this;
-// 	}
+	_checkForDuplicate(file)
+	{
+		log(file.name);
+		return axios.get($(this.formId).attr('checkFile'), {params: {name: file.name}})
+	}
 
-// 	_getPresignedUrl(file)
-// 	{
-// 	    var params = {
-// 	      fileName: file.name,
-// 	      fileType: file.type,
-// 	    };
+	_uploadFile(file, next)
+	{
+		let obj = this;
 
-// 		return axios.post($(this.formId).attr('presignedUrl'), params);
-// 	}
+    	obj._getPresignedUrl(file)
+    	 .then(function(response) {
+    	 	obj.file = {
+    	 		path: response.data.path, 
+    	 		name: response.data.name,
+    	 		originalName: file.name,
+    	 		type: file.type, 
+    	 		size: file.size,
+    	 		given_name: file.name.split('.').shift()
+    	 	};
 
-// 	_loadFiles(dropzone)
-// 	{
-// 		axios.get($(this.formId).attr('loadFiles'))
-// 			 .then(function(response) {
-// 			 	console.log(response.data);
-// 			 	response.data.forEach(function(file) {
-// 				 	dropzone.emit("addedfile", file);
-// 				 	dropzone.emit("complete", file);
-// 			 	});
-// 			 })
-// 			 .catch(function(error) {
-// 			 	console.log(error);
-// 			 })
-// 			 .then(function() {
-// 			 	$(dropzone.element).fadeIn('fast');
-// 			 	$('.dropzone-label').text($('.dropzone-label').data('label'));
-// 			 });
-// 	}
+    	 	file.signedRequest = response.data.url;
+    	 	next();
+    	 })
+    	 .catch(function(error) { next('Could not get the presigned url.'); });
+	}
 
-// 	_getIcon(file, dropzone)
-// 	{
-// 		let extensions = ['pdf', 'doc', 'docx', 'dwg', 'ai', 'afdesign'];
-// 		let file_ext = file.name.split('.').pop();
-// 		let file_type = file.type.split('/').shift();
-// 		let thumbnail;
+	_saveFile()
+	{
+		let $form = $(this.formId);
 
-// 		if (file_type == 'image') {
-// 			thumbnail = file.url;
-// 		} else if (extensions.includes(file_ext)) {
-// 			thumbnail = this.thumbPath + file_ext + ".svg";
-// 		} else {
-// 			thumbnail = this.thumbPath + "default.svg";
-// 		}
+		axios.post($form.attr('saveFile'), this.file)
+			.then(function(response) {
+			 	$('.revision-tab.active .files-container').html(response.data);
+			});
+	}
 
-// 		if (typeof thumbnail != 'undefined')
-// 			dropzone.emit('thumbnail', file, thumbnail);
-// 	}
-// }
+	_getIcon(file, dropzone)
+	{
+		let extensions = ['pdf', 'doc', 'docx', 'dwg', 'ai', 'afdesign'];
+		let file_ext = file.name.split('.').pop();
+		let file_type = file.type.split('/').shift();
+		let thumbnail;
 
-// window.DragDrop = DragDrop;
+		if (file_type == 'image') {
+			thumbnail = file.url;
+		} else if (extensions.includes(file_ext)) {
+			thumbnail = this.thumbPath + file_ext + ".svg";
+		} else {
+			thumbnail = this.thumbPath + "default.svg";
+		}
+
+		if (typeof thumbnail != 'undefined')
+			dropzone.emit('thumbnail', file, thumbnail);
+	}
+}
+
+window.DragDrop = DragDrop;
+
+let dragdrop;
+
+$('#revisions-tab [data-bs-toggle="tab"]').on('show.bs.tab', function(event) {
+	let $tab = $(event.target);
+	axios.get($tab.data('dropzone'))
+		 .then(function(response) {
+		 	$('.dropzone-container').remove();
+		 	$($tab.attr('href')).prepend(response.data);
+		 	newDropzone();
+		 })
+		 .catch(function(error) {
+		 	console.log(error);
+		 });
+});
+
+newDropzone();
+
+function newDropzone()
+{
+	let formId = '#'+$('.dropzone').attr('id');
+
+	dragdrop = new DragDrop({
+		formId: formId,
+		thumbPath: '/images/file_icons/',
+		method: 'PUT',
+		maxFilesize: 1000,
+		parallelUploads: 2,
+	}).run();
+}

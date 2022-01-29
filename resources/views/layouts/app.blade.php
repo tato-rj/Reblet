@@ -11,6 +11,27 @@
         @include('layouts.components.seo')
 
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <style type="text/css">
+            .nav-link.highlight {
+                color: blue!important;
+            }
+
+            .comments-dropdown {
+                position: absolute;
+                right: 0;
+                background: white;
+                display: none;
+            }
+        </style>
+
+        <script type="text/javascript">
+            window.unreadComments = <?php echo json_encode(request('panel')) ?>
+
+            window.project = <?php echo isset($project) ? json_encode([
+                'id' => $project->id,
+                'team' => $project->team
+                ]) : json_encode(null) ?>
+        </script>
         @stack('header')
     </head>
     <body>
@@ -107,6 +128,69 @@ $(document).on('submit', 'form.chat-form', function(e) {
             $button.removeLoader();
         });
 });
+
+function showAlert(animation)
+{
+    let $container = $('#comments-notification');
+    let $link = $container.find('.nav-link');
+
+    $link.addClass('highlight animate__repeat-2 animate__slower animate__'+animation);
+
+    $link.find('i').removeClass('fa-envelope').addClass('fa-envelope-open-text');
+
+    setTimeout(function() {
+        $link.removeClass('animate__repeat-2 animate__slower animate__'+animation);
+    }, 200);
+}
+
+function hideAlert(animation)
+{
+    let $container = $('#comments-notification');
+    let $link = $container.find('.nav-link');
+
+    $link.removeClass('highlight animate__repeat-2 animate__slower animate__'+animation);
+
+    $link.find('i').addClass('fa-envelope').removeClass('fa-envelope-open-text');
+}
+
+$('#comments-notification .nav-link').click(function() {
+    let $dropdown = $('#comments-notification').find('.comments-dropdown');
+
+    $dropdown.toggle();
+});
+
+$(document).ready(function() {
+    if (! unreadComments)
+        alertUnreadComments();
+});
+
+function alertUnreadComments()
+{
+    if ($('#comments-notification').length) {
+    axios.get($('#comments-notification').data('url'))
+         .then(function(response) {
+            if (response.data) {
+                showAlert('shakeY');
+                $('#comments-notification .comments-dropdown').html(response.data);
+            }
+         });
+    }
+}
+
+// BROADCAST COMMENTS LIVE TO OTHER USERS
+if (project) {
+    window.Echo.private('comments.'+project.team.id).listen('NewCommentPosted', function(e) {
+        let $container = $('.comments-container');
+        if ($container.length) {
+            axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
+                 .then(function(response) {
+                    $container.append(response.data);
+                 });
+        } else {
+            alertUnreadComments();
+        }
+    });
+}
 </script>
         @stack('scripts')
     </body>

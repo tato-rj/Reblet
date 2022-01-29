@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Revision extends DocuSquared
+class Revision extends Reblet
 {
     protected static function booted()
     {

@@ -5280,7 +5280,50 @@ __webpack_require__(/*! ./bootstrap/components */ "./resources/js/bootstrap/comp
 
 window.log = function (message) {
   console.log(message);
-};
+}; // SUPPORTING FILES
+
+
+$(document).on('change', '.support-data-form select[name="type"]', function () {
+  var $inputs = $(this).closest('form').find('.hidden-inputs');
+  var $target = $(this).closest('form').find('.' + this.value);
+  $inputs.find('input').prop('required', false);
+  $inputs.hide();
+  $target.find('input').prop('required', true);
+  $target.show();
+}); // SEND FILE VIA EMAIL
+
+$(document).on('submit', 'form.share-file-form', function (e) {
+  e.preventDefault();
+  var recipient = $(this).find('[name="recipient"]').val();
+  var subject = $(this).find('[name="subject"]').val();
+  var body = $(this).find('[name="body"]').val();
+  var email = 'mailto:' + recipient + '?' + subject + '&' + body;
+  window.open(email, '_blank');
+}); // OPEN FILE ACTION BUTTONS
+
+$(document).on('click', '.file-action-button .btn', function () {
+  var $button = $(this);
+  var $panel = $('#file-panel');
+  var $action = $panel.find('.panel-action[data-action="' + $button.data('action') + '"]');
+
+  if ($panel.is(':visible') && $action.is(':visible')) {
+    $panel.trigger('file-panel:close');
+  } else {
+    $button.disable();
+    axios.get($button.data('url')).then(function (response) {
+      $panel.html(response.data);
+      $panel.trigger('file-panel:open');
+    })["catch"](function (error) {
+      console.log(error);
+    }).then(function () {
+      $button.enable();
+    });
+  }
+}); // CLOSE FILE PANEL
+
+$(document).on('click', '#file-panel button[data-dismiss="panel"]', function () {
+  $('#file-panel').trigger('file-panel:close');
+});
 
 /***/ }),
 
@@ -5368,8 +5411,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   \*********************************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-__webpack_require__(/*! ../utilities/DragDrop */ "./resources/js/utilities/DragDrop.js");
-
+// require('../utilities/DragDrop');
 __webpack_require__(/*! ../utilities/Clipboard */ "./resources/js/utilities/Clipboard.js");
 
 __webpack_require__(/*! ../utilities/Overlay */ "./resources/js/utilities/Overlay.js");
@@ -5519,6 +5561,11 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 jQuery.fn.hasAttr = function (attr) {
   var value = this.attr(attr);
   return typeof value !== 'undefined' && value !== false;
+};
+
+jQuery.fn.toggleProp = function (prop) {
+  var state = this.prop(prop);
+  return this.prop(prop, !state);
 };
 
 /***/ }),
@@ -5713,120 +5760,6 @@ var Clipboard = /*#__PURE__*/function () {
 }();
 
 window.Clipboard = Clipboard;
-
-/***/ }),
-
-/***/ "./resources/js/utilities/DragDrop.js":
-/*!********************************************!*\
-  !*** ./resources/js/utilities/DragDrop.js ***!
-  \********************************************/
-/***/ (() => {
-
-// class DragDrop
-// {
-// 	constructor(params)
-// 	{
-// 		this.formId = params.formId;
-// 		this.method = params.method;
-// 		this.maxFilesize = params.maxFilesize;
-// 		this.parallelUploads = params.parallelUploads;
-// 		this.thumbPath = params.thumbPath;
-// 	}
-// 	run()
-// 	{
-// 		let obj = this;
-// 		Dropzone.options.dropForm = {
-// 			method: obj.method,
-// 			url: '#',
-// 			maxFilesize: obj.maxFilesize, // MB
-// 			parallelUploads: obj.parallelUploads,
-// 			dictDefaultMessage: '',
-// 		    headers: {},
-// 		    accept: function(file, next) {
-// 		    	obj._getPresignedUrl(file)
-// 		    	 .then(function(response) {
-// 		    	 	file.signedRequest = response.data;
-// 		    	 	next();
-// 		    	 })
-// 		    	 .catch(function(error) {
-// 		    	 	console.log(error);
-// 		    	 	next('Could not get the presigned url.');
-// 		    	 });
-// 		    },
-// 		    sending: function(file, xhr) {
-// 		        var _send = xhr.send;
-// 		        xhr.setRequestHeader('x-amz-acl', 'public-read');
-// 		        xhr.send = function() {
-// 		            _send.call(xhr, file);
-// 		        }
-// 		    },
-// 		    processing: function(file) {
-// 		        this.options.url = file.signedRequest;
-// 		    },
-// 			init: function() {
-// 				obj._loadFiles(this);
-// 				this.on('addedfile', file => {
-// 					obj._getIcon(file, this);
-// 				});
-// 				this.on("sending", file => {});
-// 				this.on("error", (file, error) => {});
-// 				this.on("success", (file) => {});
-// 				this.on("complete", (file) => {});
-// 			}
-// 		};
-// 		return obj;
-// 	}
-// 	onClick(action)
-// 	{
-// 		$(document).on('click', '.dropzone.dz-clickable .dz-image', function() {
-// 			action(this);
-// 		});
-// 		return this;
-// 	}
-// 	_getPresignedUrl(file)
-// 	{
-// 	    var params = {
-// 	      fileName: file.name,
-// 	      fileType: file.type,
-// 	    };
-// 		return axios.post($(this.formId).attr('presignedUrl'), params);
-// 	}
-// 	_loadFiles(dropzone)
-// 	{
-// 		axios.get($(this.formId).attr('loadFiles'))
-// 			 .then(function(response) {
-// 			 	console.log(response.data);
-// 			 	response.data.forEach(function(file) {
-// 				 	dropzone.emit("addedfile", file);
-// 				 	dropzone.emit("complete", file);
-// 			 	});
-// 			 })
-// 			 .catch(function(error) {
-// 			 	console.log(error);
-// 			 })
-// 			 .then(function() {
-// 			 	$(dropzone.element).fadeIn('fast');
-// 			 	$('.dropzone-label').text($('.dropzone-label').data('label'));
-// 			 });
-// 	}
-// 	_getIcon(file, dropzone)
-// 	{
-// 		let extensions = ['pdf', 'doc', 'docx', 'dwg', 'ai', 'afdesign'];
-// 		let file_ext = file.name.split('.').pop();
-// 		let file_type = file.type.split('/').shift();
-// 		let thumbnail;
-// 		if (file_type == 'image') {
-// 			thumbnail = file.url;
-// 		} else if (extensions.includes(file_ext)) {
-// 			thumbnail = this.thumbPath + file_ext + ".svg";
-// 		} else {
-// 			thumbnail = this.thumbPath + "default.svg";
-// 		}
-// 		if (typeof thumbnail != 'undefined')
-// 			dropzone.emit('thumbnail', file, thumbnail);
-// 	}
-// }
-// window.DragDrop = DragDrop;
 
 /***/ }),
 

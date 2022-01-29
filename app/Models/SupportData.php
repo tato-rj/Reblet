@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class SupportData extends DocuSquared
+class SupportData extends Reblet
 {
     //
 }

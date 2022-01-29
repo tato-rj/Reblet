@@ -98,7 +98,11 @@ Route::middleware('auth')->prefix('revisions')->name('revisions.')->group(functi
 
 Route::middleware('auth')->prefix('comments')->name('comments.')->group(function() {
 
+    Route::get('', 'CommentsController@index')->name('index');
+
     Route::get('comment', 'CommentsController@show')->name('show');
+
+    Route::patch('read', 'CommentsController@read')->name('read');
 
     Route::post('{project}', 'CommentsController@store')->name('store');
 

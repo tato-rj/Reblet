@@ -17,7 +17,7 @@
 <div class="row"> 
 	<div class="col-6"> 
 		@back(['url' => route('projects.index'), 'pagename' => 'projects'])
-		<div class="pb-4 mb-4 border-bottom">
+		<div class="mb-5">
 			@title([
 				'title' => $project->name,
 				'icon' => ['name' => 'desktop'],

@@ -11,17 +11,9 @@
       @else
       <div class="collapse navbar-collapse justify-content-{{$menu['position'] ?? 'end'}}" id="{{$navId}}">
         <ul class="navbar-nav">
-          @foreach($menu['items'] as $item)
-          @if(isset($item['dropdown']))
-          @include('layouts.navbar.items.dropdown', $item)
-          @elseif(isset($item['panels']))
-          @include('layouts.navbar.items.panels', $item)
-          @elseif(isset($item['logout']))
-          @include('layouts.navbar.items.logout')
-          @else
-          @include('layouts.navbar.items.simple', $item)
-          @endif
-          @endforeach
+
+          {{$slot}}
+
         </ul>
       </div>
       @endisset

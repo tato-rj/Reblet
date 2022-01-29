@@ -26,7 +26,8 @@ class TeamsController extends Controller
     public function join(Request $request, Project $project)
     {
         if ($user = User::byEmail($request->email)->first()) {
-            $project->team->members()->save($user);
+            if (! $project->team->members->contains($user))
+                $project->team->members()->save($user);
 
             return redirect(route('projects.folders.show', ['project' => $project, 'folder' => $project->folders()->home()]));
         } else {

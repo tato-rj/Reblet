@@ -31,6 +31,21 @@ class User extends Authenticatable
         return $this->belongsToMany(Team::class);
     }
 
+    public function unreadComments()
+    {
+        return $this->hasMany(UnreadComment::class);
+    }
+
+    public function read(Comment $comment)
+    {
+        return $this->unreadComments()->where('comment_id', $comment->id)->delete();
+    }
+
+    public function hasRead(Comment $comment)
+    {
+        return ! $this->unreadComments()->where('comment_id', $comment->id)->exists();
+    }
+
     public function avatar($size = null)
     {
         return view('pages.users.avatar', ['initial' => substr($this->name, 0, 1), 'size' => $size])->render();

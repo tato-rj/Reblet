@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\Commentable;
 
-class File extends DocuSquared
+class File extends Reblet
 {    
     use Commentable;
     
@@ -15,6 +15,7 @@ class File extends DocuSquared
         self::deleting(function($file) {
             aws()->disk()->delete($file->path);
             $file->supportData->each->delete();
+            $file->comments->each->delete();
         });
     }
 
@@ -102,6 +103,11 @@ class File extends DocuSquared
     public function unused()
     {
         return ! $this->replaced_at && $this->duplicatedFrom()->exists();
+    }
+
+    public function route($params = [])
+    {
+        return $this->revision->folder->route($params);
     }
 }
 

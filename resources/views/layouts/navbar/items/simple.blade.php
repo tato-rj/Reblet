@@ -1,5 +1,7 @@
 @php($is_route = is_route($route ?? null))
-<a class="nav-link text-wrap py-{{$menu['height'] ?? null}} px-{{$menu['gap'] ?? null}} hover-{{$menu['hover'] ?? null}} {{$is_route ? 'active' : null}}"  
+<a class="nav-link animate__animated text-wrap py-{{$height ?? null}} px-{{$gap ?? null}} hover-{{$hover ?? null}} {{$is_route ? 'active' : null}}"  		@isset($id)
+		id="{{$id}}"
+		@endisset 
 	aria-current="page" 
 	href="{{isset($route) ? route($route) : '#'}}">
 @isset($icon)

@@ -1,0 +1,2 @@
+		@php($is_route = is_route($dropdown['route'] ?? null))
+		<li><a class="nav-link py-{{$dropdown['height'] ?? null}} px-{{$dropdown['gap'] ?? null}} hover-{{$dropdown['hover'] ?? null}} {{$is_route ? 'active' : null}}" href="{{isset($dropdown['route']) ? route($dropdown['route']) : '#'}}">{{$dropdown['label']}}</a></li>

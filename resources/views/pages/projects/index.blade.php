@@ -11,7 +11,7 @@
 @if(auth()->user()->teams()->exists())
 @include('pages.projects.table')
 @else
-<span class="text-muted">You are not parcitipating in any projects yet...</span>
+<span class="text-muted">Click below to start your first project!</span>
 @endif
 </div>
 

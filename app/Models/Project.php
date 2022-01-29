@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\FindBySlug;
 
-class Project extends DocuSquared
+class Project extends Reblet
 {
     use FindBySlug;
 

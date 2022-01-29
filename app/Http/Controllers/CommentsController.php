@@ -16,7 +16,10 @@ class CommentsController extends Controller
      */
     public function index()
     {
-        //
+        if (! auth()->check() || ! auth()->user()->unreadComments()->exists())
+            return null;
+
+        return view('pages.comments.notifications', ['comments' => auth()->user()->unreadComments->pluck('comment')])->render();
     }
 
     /**
@@ -68,6 +71,8 @@ class CommentsController extends Controller
     {
         $comment = Comment::findOrFail($request->id);
 
+        auth()->user()->read($comment);
+
         return view('pages.comments.comment', compact('comment'))->render();
     }
 
@@ -77,9 +82,19 @@ class CommentsController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Comment $comment)
+    public function read(Request $request)
     {
-        //
+        if (empty($request->comments))
+            return response(200);
+
+        foreach($request->comments as $id) {
+            $comment = Comment::findOrFail($id);
+
+            if (! auth()->user()->hasRead($comment))
+                auth()->user()->read($comment);
+        }
+
+        return response(200);
     }
 
     /**
@@ -106,6 +121,6 @@ class CommentsController extends Controller
 
         $comment->delete();
 
-        return back()->with('success', 'The comment has been deleted.');
+        return response(200);
     }
 }

@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
-class Team extends DocuSquared
+class Team extends Reblet
 {
     protected static function booted()
     {
         self::created(function($team) {
             $team->members()->save($team->project->creator);
+        });
+
+        self::deleting(function($team) {
+            $team->members()->detach();
         });
     }
 
@@ -19,6 +23,11 @@ class Team extends DocuSquared
     public function members()
     {
         return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function leader()

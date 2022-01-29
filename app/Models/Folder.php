@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\{FindBySlug, Commentable};
 
-class Folder extends DocuSquared
+class Folder extends Reblet
 {
     use FindBySlug, Commentable;
 
@@ -19,6 +19,7 @@ class Folder extends DocuSquared
         self::deleting(function($folder) {
             $folder->children->each->delete();
             $folder->revisions->each->delete();
+            $folder->comments->each->delete();
         });
     }
 
@@ -85,8 +86,8 @@ class Folder extends DocuSquared
         return $this->update(['approved_at' => now()]);
     }
 
-    public function route()
+    public function route($params = [])
     {
-        return route('projects.folders.show', ['project' => $this->project, 'folder' => $this]);
+        return route('projects.folders.show', array_merge(['project' => $this->project, 'folder' => $this], $params));
     }
 }

@@ -16,10 +16,10 @@ class AWS
 		return $this->disk;
 	}
 
-	public function presignedUrl($filename, $duration = 1)
+	public function presignedUrl($filename, $minutes = 1)
 	{
         $client = $this->disk->getDriver()->getAdapter()->getClient();
-        $expiry = now()->addMinutes($duration);
+        $expiry = now()->addMinutes($minutes);
 
         $cmd = $client->getCommand('PutObject', [
             'Bucket' => config('filesystems.disks.s3.bucket'),
