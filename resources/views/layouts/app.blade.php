@@ -182,8 +182,8 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
-    window.Echo.options.key = '9380d89da868989aaaf2';
-    
+    Echo.options.key = '9380d89da868989aaaf2';
+
     log('Listening to event.');
     window.Echo
           .private('comments.'+project.team.id)
