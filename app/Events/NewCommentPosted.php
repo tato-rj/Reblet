@@ -29,6 +29,11 @@ class NewCommentPosted implements ShouldBroadcast
         $this->dontBroadcastToCurrentUser();
     }
 
+    public function broadcastAs()
+    {
+        return 'NewCommentPosted';
+    }
+
     /**
      * Get the channels the event should broadcast on.
      *

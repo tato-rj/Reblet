@@ -185,7 +185,7 @@ if (project) {
     log('Listen to channel: comments.'+project.team.id);
     window.Echo
           .private('comments.'+project.team.id)
-          .listen('NewCommentPosted', function(e) {
+          .listen('.NewCommentPosted', function(e) {
                 alert(e);
                 let $container = $('.comments-container');
                 if ($container.length) {
