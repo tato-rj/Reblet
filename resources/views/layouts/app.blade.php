@@ -182,9 +182,9 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
-    log('Listen to channel: private-comments.'+project.team.id);
+    log('Listen to channel: comments.'+project.team.id);
     window.Echo
-          .private('private-comments.'+project.team.id)
+          .private('comments.'+project.team.id)
           .listen('NewCommentPosted', function(e) {
                 alert(e);
                 let $container = $('.comments-container');
