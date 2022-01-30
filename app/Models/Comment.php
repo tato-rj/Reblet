@@ -12,6 +12,10 @@ class Comment extends Reblet
                     UnreadComment::create(['comment_id' => $comment->id, 'user_id' => $user->id]);
             });
         });
+
+        self::deleting(function($comment) {
+            UnreadComment::where(['comment_id' => $comment->id])->delete();
+        });
     }
 
     public function user()

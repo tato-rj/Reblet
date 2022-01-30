@@ -173,6 +173,9 @@ function alertUnreadComments()
                 showAlert('shakeY');
                 $('#comments-notification .comments-dropdown').html(response.data);
             }
+         })
+         .catch(function(error) {
+            log(error);
          });
     }
 }
