@@ -186,6 +186,7 @@ if (project) {
     window.Echo
           .private('comments.'+project.team.id)
           .listen('NewCommentPosted', function(e) {
+                log('New event: ' + e);
                 let $container = $('.comments-container');
                 if ($container.length) {
                     axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
