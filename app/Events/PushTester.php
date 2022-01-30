@@ -31,7 +31,6 @@ class PushTester implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        dd($this);
         return new Channel('test');
     }
 }
