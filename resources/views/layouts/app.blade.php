@@ -182,19 +182,21 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
-    log('Calling echo on project id: '+project.id);
-    window.Echo.private('comments.'+project.team.id).listen('NewCommentPosted', function(e) {
-        alert(e);
-        let $container = $('.comments-container');
-        if ($container.length) {
-            axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
-                 .then(function(response) {
-                    $container.append(response.data);
-                 });
-        } else {
-            alertUnreadComments();
-        }
-    });
+    log('Listen to channel: comments.'+project.team.id);
+    window.Echo
+          .private('comments.'+project.team.id)
+          .listen('NewCommentPosted', function(e) {
+                alert(e);
+                let $container = $('.comments-container');
+                if ($container.length) {
+                    axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
+                         .then(function(response) {
+                            $container.append(response.data);
+                         });
+                } else {
+                    alertUnreadComments();
+                }
+            });
 }
 </script>
         @stack('scripts')
