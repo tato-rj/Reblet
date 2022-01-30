@@ -184,7 +184,7 @@ function alertUnreadComments()
 if (project) {
     log('Listening to event.');
     window.Echo
-          .private('xcomments.'+project.team.id)
+          .private('comments.'+project.team.id)
           .listen('NewCommentPosted', function(e) {
                 log('New event: ' + e);
                 let $container = $('.comments-container');
