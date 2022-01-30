@@ -31,10 +31,13 @@
 			</div>
 
 			<div>
-				@label(['label' => str_possessive($project->name).' team'])
-				@foreach($project->team->members as $member)
-				<div>{!!$member->avatar()!!}{{$member->name}}</div>
-				@endforeach
+				<div class="mb-2">
+					@label(['label' => str_possessive($project->name).' team'])
+					@foreach($project->team->members as $member)
+					<div>{!!$member->avatar()!!}{{$member->name}}</div>
+					@endforeach
+				</div>
+				@include('pages.team.invite', ['team' => $project->team])
 			</div>
 		</div>
 

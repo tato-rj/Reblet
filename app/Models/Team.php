@@ -25,6 +25,16 @@ class Team extends Reblet
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
+    public function orderedMembers()
+    {
+        if (! $this->findUser(auth()->user()))
+            return $this->members;
+        
+        return $this->members->reject(function($member) {
+            return $member->is(auth()->user());
+        })->prepend(auth()->user());
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);

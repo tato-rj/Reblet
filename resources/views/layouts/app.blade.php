@@ -182,11 +182,9 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
-    log('Listen to channel: comments.'+project.team.id);
     window.Echo
           .private('comments.'+project.team.id)
-          .listen('.NewCommentPosted', function(e) {
-                alert(e);
+          .listen('NewCommentPosted', function(e) {
                 let $container = $('.comments-container');
                 if ($container.length) {
                     axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
