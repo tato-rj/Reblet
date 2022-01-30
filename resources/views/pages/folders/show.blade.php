@@ -82,7 +82,7 @@ $('#file-panel').on('file-panel:open', function(event) {
 	if ($comments.length) {
 		axios.patch($comments.data('read-url'))
 			 .then(function(response) {
-			 	log(response.data);
+			 	//
 			 })
 			 .then(function() {
 			 	alertUnreadComments();
