@@ -182,6 +182,7 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
+    log('Listening to event.');
     window.Echo
           .private('comments.'+project.team.id)
           .listen('NewCommentPosted', function(e) {
