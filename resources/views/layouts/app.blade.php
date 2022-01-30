@@ -182,8 +182,9 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
+    log('Calling echo...');
     window.Echo.private('comments.'+project.team.id).listen('NewCommentPosted', function(e) {
-        log(e);
+        alert(e);
         let $container = $('.comments-container');
         if ($container.length) {
             axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
