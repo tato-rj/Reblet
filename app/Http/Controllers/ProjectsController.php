@@ -14,6 +14,8 @@ class ProjectsController extends Controller
      */
     public function index()
     {
+        \App\Events\PushTester::dispatch();
+        
         return view('pages.projects.index');
     }
 
