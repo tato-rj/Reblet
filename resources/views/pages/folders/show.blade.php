@@ -28,7 +28,10 @@
 	margin-left: -22px;
 }
 
+
 </style>
+
+
 
 @endpush
 
@@ -115,6 +118,29 @@ $(document).on('submit', '[id^=delete-comment] form', function(e) {
 		 	log(error);
 		 });
 });
+</script>
+
+<script type="text/javascript">
+$(document).on('keyup', 'form.chat-form textarea[name="content"]', function() {
+	if ($(this).val().length > 2) {
+		window.Echo.private('comments.'+project.team.id).whisper('typing', {
+	        userId: user.id
+	    });
+	} else {
+		window.Echo.private('comments.'+project.team.id).whisper('typing', {
+	        userId: null
+	    });	
+	}
+});
+
+Echo.private('comments.'+project.team.id)
+    .listenForWhisper('typing', (e) => {
+        if ($('#typing').length && e.userId) {
+        	$('#typing').show();
+        } else {
+        	$('#typing').hide();
+        }
+    });
 </script>
 
 <script type="text/javascript">

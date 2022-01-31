@@ -27,6 +27,8 @@
         <script type="text/javascript">
             window.unreadComments = <?php echo json_encode(request('panel')) ?>
 
+            window.user = <?php echo json_encode(auth()->check() ? auth()->user() : null) ?>
+
             window.project = <?php echo isset($project) ? json_encode([
                 'id' => $project->id,
                 'team' => $project->team
@@ -182,16 +184,15 @@ function alertUnreadComments()
 
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
-    log('Listening to event.');
     window.Echo
           .private('comments.'+project.team.id)
           .listen('NewCommentPosted', function(e) {
-                log('New event: ' + e);
                 let $container = $('.comments-container');
                 if ($container.length) {
                     axios.get($container.data('get-comment-url'), {params: {id: e.comment.id}})
                          .then(function(response) {
                             $container.append(response.data);
+                            $('#typing').hide();
                          });
                 } else {
                     alertUnreadComments();
