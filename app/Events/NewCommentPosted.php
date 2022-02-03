@@ -36,6 +36,6 @@ class NewCommentPosted implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('comments.'.$this->comment->team->id);
+        return new PrivateChannel(app()->environment() . '.comments.' . $this->comment->team->id);
     }
 }

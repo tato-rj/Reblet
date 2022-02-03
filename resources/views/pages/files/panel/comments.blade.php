@@ -3,6 +3,7 @@
 	@include('pages.comments.all', ['comments' => $file->comments])
 </div>
 <div id="typing" style="display: none">
+	<div class="text-muted text-center mb-1" style="font-size: 68%"><i id="typer"></i></div>
 <div class="typing-indicator mb-2 opacity-6">
   <span></span>
   <span></span>

@@ -25,13 +25,20 @@
         </style>
 
         <script type="text/javascript">
+            window.channels = <?php echo json_encode([
+                'comments' => app()->environment() . '.comments.'
+                ]) ?>
+
             window.unreadComments = <?php echo json_encode(request('panel')) ?>
 
             window.user = <?php echo json_encode(auth()->check() ? auth()->user() : null) ?>
 
             window.project = <?php echo isset($project) ? json_encode([
                 'id' => $project->id,
-                'team' => $project->team
+                'team' => $project->team,
+                'channels' => [
+                    'comments' => app()->environment() . '.comments.' . $project->team->id
+                ]
                 ]) : json_encode(null) ?>
         </script>
         @stack('header')
@@ -185,7 +192,7 @@ function alertUnreadComments()
 // BROADCAST COMMENTS LIVE TO OTHER USERS
 if (project) {
     window.Echo
-          .private('comments.'+project.team.id)
+          .private(project.channels.comments)
           .listen('NewCommentPosted', function(e) {
                 let $container = $('.comments-container');
                 if ($container.length) {

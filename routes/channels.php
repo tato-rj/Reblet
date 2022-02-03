@@ -14,6 +14,7 @@ use App\Models\Team;
 |
 */
 
-Broadcast::channel('comments.{team}', function ($user, Team $team) {
-    return $team->members->contains($user);
+Broadcast::channel(app()->environment() . '.comments.{team}', function ($user, Team $team) {
+    return true;
+    // return $team->members->contains($user);
 });

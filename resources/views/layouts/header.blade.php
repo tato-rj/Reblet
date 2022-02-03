@@ -3,9 +3,7 @@
     'layout' => 'fixed',
     'classes' => 'border-bottom',
     'background' => 'white',
-    'menu' => [
-      'position' => 'end',    
-    ],
+    'position' => 'end'
   ])
 
   @isset($project)
