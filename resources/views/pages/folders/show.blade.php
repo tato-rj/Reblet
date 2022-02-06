@@ -103,6 +103,7 @@ class DragDrop
 		    accept: function(file, next) {
 		    	obj._checkForDuplicate(file)
 		    		.then(function(response) {
+		    			log(file);
 		    			let fileExists = response.data;
 			    		if (! fileExists || confirm('This file already exists. Do you want to replace it?')) {
 			    			obj._uploadFile(file, next);
@@ -181,6 +182,7 @@ class DragDrop
 	_saveFile(file)
 	{
 		let $form = $(this.formId);
+
 		log(file.data);
 		axios.post($form.attr('saveFile'), file.data)
 			.then(function(response) {

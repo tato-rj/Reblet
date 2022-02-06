@@ -56,7 +56,6 @@ class FilesController extends Controller
         $request->validate([
             'name' => 'required',
             'path' => 'required',
-            'type' => 'required',
             'size' => 'required'
         ]);
 
@@ -75,7 +74,7 @@ class FilesController extends Controller
                 'name' => $request->name,
                 'given_name' => $request->given_name,
                 'path' => $request->path,
-                'type' => $request->type,
+                'type' => $request->type ?? getExtension($request->name),
                 'size' => $request->size,
                 'url' => aws()->disk()->url($request->path),
                 'extension' => getExtension($request->name),
