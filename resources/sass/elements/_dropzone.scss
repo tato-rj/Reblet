@@ -1,5 +1,28 @@
+.dropzone .dz-preview {
+    margin: 6px !important;
+    min-height: auto !important;
+}
+
 .dropzone .dz-preview .dz-image {
 	background: transparent;
+    width: 68px !important;
+    height: 68px !important;
+}
+
+.dropzone .dz-preview .dz-success-mark svg, .dropzone .dz-preview .dz-error-mark svg {
+    width: 38px !important;
+    height: 38px !important;
+}
+
+.dropzone .dz-preview .dz-success-mark, .dropzone .dz-preview .dz-error-mark {
+    margin-left: -19px !important;
+    margin-top: -19px !important;
+}
+
+.dropzone .dz-preview .dz-progress {
+    left: 8% !important;
+    width: 84% !important;
+    margin-left: 0 !important;
 }
 
 .dropzone .dz-preview:hover .dz-image img {

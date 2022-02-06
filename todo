@@ -1,0 +1,6 @@
+- Forever keep the original file name
+- Call home folder as the name of the project (remove the projec name from the tree)
+- Create a short description (tag) for a folder
+- Name files as: [project name]-[folder name]-[order number]-[revision number]
+- Auto-rename files when editing the folder tag name
+- Option to revert filename back to original name
