@@ -95,6 +95,6 @@ class Revision extends Reblet
     {
         $downloaded = $this->files()->where('downloaded_name', $name)->first();
 
-        return $downloaded ?? $this->files()->where('given_name', removeExtension($name))->first();
+        return $downloaded ?? $this->files()->where('original_name', removeExtension($name))->first();
     }
 }

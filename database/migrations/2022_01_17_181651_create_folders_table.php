@@ -18,6 +18,7 @@ class CreateFoldersTable extends Migration
             $table->string('slug');
             $table->unsignedInteger('creator_id');
             $table->string('name');
+            $table->string('tag');
             $table->string('description')->nullable();
             $table->unsignedInteger('project_id');
             $table->string('parent_type');

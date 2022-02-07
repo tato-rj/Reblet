@@ -7,6 +7,13 @@
 		'placeholder' => 'Folder name',
 		'required' => true
 	])
+
+	@input([
+		'name' => 'tag',
+		'placeholder' => 'Tag (ex: Floor plans)',
+		'required' => true
+	])
+
 	@textarea([
 		'name' => 'description',
 		'placeholder' => 'What is this folder for?',

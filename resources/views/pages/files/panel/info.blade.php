@@ -1,7 +1,7 @@
 @component('pages.files.panel.layout', ['title' => 'Info', 'id' => 'info', 'file' => $file])
 <div class="mb-3">
 	@label(['label' => 'Original file'])
-	<div>{{$file->given_name}}.{{$file->extension}}</div>
+	<div class="text-muted">{{$file->original_name}}</div>
 </div>
 
 <div class="mb-3">

@@ -44,6 +44,7 @@ class FoldersController extends Controller
             'slug' => str_slug($request->name),
             'creator_id' => auth()->user()->id,
             'name' => $request->name,
+            'tag' => $request->tag,
             'description' => $request->description,
             'project_id' => $project->id,
             'parent_type' => get_class($folder),

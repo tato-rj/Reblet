@@ -16,6 +16,7 @@ class Project extends Reblet
             $project->folders()->create([
                 'slug' => 'home',
                 'name' => 'Home',
+                'tag' => 'home',
                 'project_id' => $project->id,
                 'creator_id' => $project->creator_id,
                 'is_home' => true

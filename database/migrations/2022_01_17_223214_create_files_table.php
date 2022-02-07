@@ -17,7 +17,8 @@ class CreateFilesTable extends Migration
             $table->id();
             $table->unsignedInteger('creator_id');
             $table->string('name')->unique()->index();
-            $table->string('given_name')->nullable();
+            $table->string('original_name');
+            $table->string('custom_name')->nullable();
             $table->string('downloaded_name')->nullable();
             $table->string('extension');
             $table->string('type');

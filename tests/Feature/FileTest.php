@@ -17,7 +17,7 @@ class FileTest extends AppTest
         $revision = create(Revision::class);
 
         $request = make(File::class, [
-            'revision_id' => $revision->id
+            'revision_id' => $revision->id,
         ]);
 
         $this->post(route('files.store', $revision), $request->toArray());

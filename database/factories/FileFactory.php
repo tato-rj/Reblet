@@ -18,6 +18,8 @@ class FileFactory extends Factory
             'creator_id' => function() {
                 return User::factory()->create()->id;
             },
+            'custom_name' => $this->faker->word,
+            'original_name' => $this->faker->word,
             'name' => $this->faker->word,
             'path' => $this->faker->url,
             'type' => $this->faker->word,

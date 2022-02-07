@@ -70,24 +70,33 @@ class File extends Reblet
         return ucfirst(str_replace('revision', 'rev', $revision->name));
     }
 
-    public function getFolderName()
+    public function getFolderTag()
     {
-        $folder = $this->revision->folder;
+        return str_slug($this->revision->folder->tag);
+    }
 
-        if (! $folder->is_home)
-            return ucfirst(str_slug($folder->name));
+    public function getOrder()
+    {
+        $order = $this->revision->files()->whereNull('custom_name')->get()->search(function($file, $index) {
+            return $file->is($this);
+        });
+
+        return sprintf('%02d', $order += 1);
     }
 
     public function publicName($ext = false)
     {
-        $pieces = array_filter([
-            $this->getProjectName(), 
-            $this->getFolderName(), 
-            ucfirst($this->given_name),
-            $this->getRevisionName()]);
-        
         $extension = $ext ? '.' . $this->extension : null;
 
+        if ($this->custom_name)
+            return $this->custom_name . $extension;
+
+        $pieces = array_filter([
+            $this->getProjectName(), 
+            $this->getFolderTag(), 
+            $this->getOrder(),
+            $this->getRevisionName()]);
+        
         return implode('-', $pieces) . $extension;
     }
 

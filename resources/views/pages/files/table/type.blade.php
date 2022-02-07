@@ -1,1 +1,1 @@
-{{$file->type}}
+{{strtoupper($file->type)}}

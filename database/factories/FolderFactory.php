@@ -22,6 +22,7 @@ class FolderFactory extends Factory
                 return User::factory()->create()->id;
             },
             'name' => $this->faker->sentence,
+            'tag' => $this->faker->word,
             'description' => $this->faker->sentence,
             'project_id' => function() use ($project) {
                 return $project->id;

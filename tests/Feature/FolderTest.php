@@ -19,6 +19,7 @@ class FolderTest extends AppTest
 
         $this->post(route('projects.folders.store', ['project' => $request->project, 'folder' => $request->project->folders()->home()]), [
             'name' => $request->name,
+            'tag' => $request->tag,
             'description' => $request->description
         ]);
 

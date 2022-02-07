@@ -44,7 +44,7 @@
 		@breadcrumb(['trail' => $folder->breadcrumb(), 'current' => $folder->name])
 
 		<div class="mb-4">
-			<h3 class="m-0">@fa(['icon' => 'folder-open', 'fa_color' => 'muted']){{$folder->name}}</h3>
+			<h3 class="m-0">@fa(['icon' => 'folder-open', 'fa_color' => 'muted']){{$folder->name}} <span class="opacity-4">{{$folder->isHome() ? null : $folder->tag}}</span></h3>
 			<p class="text-muted"><small>Created by {{$folder->creator->name}}</small></p>
 			<p class="text-muted">{{$folder->description}}</p>
 		</div>
@@ -166,10 +166,9 @@ class DragDrop
     	 	file.data = {
     	 		path: response.data.path, 
     	 		name: response.data.name,
-    	 		originalName: file.name,
+    	 		original_name: file.name,
     	 		type: file.type, 
     	 		size: file.size,
-    	 		given_name: file.name.split('.').shift()
     	 	};
 
     	 	file.signedRequest = response.data.url;

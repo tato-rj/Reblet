@@ -59,7 +59,7 @@ class FilesController extends Controller
             'size' => 'required'
         ]);
 
-        if ($existingFile = $revision->duplicateFile($request->originalName)) {
+        if ($existingFile = $revision->duplicateFile($request->original_name)) {
             
             aws()->disk()->delete($existingFile->path);
 
@@ -72,7 +72,7 @@ class FilesController extends Controller
         } else {
             auth()->user()->files()->create([
                 'name' => $request->name,
-                'given_name' => $request->given_name,
+                'original_name' => $request->original_name,
                 'path' => $request->path,
                 'type' => getExtension($request->name),
                 'size' => $request->size,
@@ -112,7 +112,7 @@ class FilesController extends Controller
     public function update(Request $request, File $file)
     {
         $file->update([
-            'given_name' => $request->given_name,
+            'custom_name' => $request->custom_name,
             'description' => $request->description
         ]);
 
